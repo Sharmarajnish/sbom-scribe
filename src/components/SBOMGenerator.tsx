@@ -132,6 +132,50 @@ export const SBOMGenerator = () => {
 
   const totalVulnerabilities = results?.reduce((sum, component) => sum + component.vulnerabilities, 0) || 0;
 
+  const handleDownloadSBOM = () => {
+    if (!results) return;
+    
+    const sbomData = {
+      bomFormat: "CycloneDX",
+      specVersion: "1.4",
+      version: 1,
+      metadata: {
+        timestamp: new Date().toISOString(),
+        tools: ["SBOM Generator v1.0"],
+        component: {
+          type: "application",
+          name: repoUrl.split('/').pop() || "unknown-project"
+        }
+      },
+      components: results.map(component => ({
+        type: "library",
+        name: component.name,
+        version: component.version,
+        licenses: [{ license: { name: component.license } }],
+        purl: `pkg:${component.type}/${component.name}@${component.version}`,
+        vulnerabilities: component.vulnerabilities
+      }))
+    };
+
+    const blob = new Blob([JSON.stringify(sbomData, null, 2)], {
+      type: 'application/json'
+    });
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sbom-${sbomData.metadata.component.name}-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "SBOM Downloaded",
+      description: "SBOM file has been downloaded successfully",
+    });
+  };
+
   return (
     <section className="py-16 px-6">
       <div className="container mx-auto max-w-4xl">
@@ -238,7 +282,11 @@ export const SBOMGenerator = () => {
                   {results.length} components analyzed
                 </p>
               </div>
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2"
+                onClick={handleDownloadSBOM}
+              >
                 <Download className="w-4 h-4" />
                 Download SBOM
               </Button>
