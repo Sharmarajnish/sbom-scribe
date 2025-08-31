@@ -51,13 +51,29 @@ export const SBOMGenerator = () => {
       ];
     }
     
+    if (url.includes('hello-world') || url.includes('simple') || url.includes('demo')) {
+      return [
+        { name: "express", version: "4.18.2", license: "MIT", vulnerabilities: 0, type: "framework" },
+        { name: "dotenv", version: "16.3.1", license: "BSD-2-Clause", vulnerabilities: 0, type: "config" },
+        { name: "nodemon", version: "3.0.1", license: "MIT", vulnerabilities: 0, type: "dev-tool" },
+      ];
+    }
+    
+    if (url.includes('flask') || url.includes('python')) {
+      return [
+        { name: "Flask", version: "2.3.3", license: "BSD-3-Clause", vulnerabilities: 0, type: "framework" },
+        { name: "Werkzeug", version: "2.3.7", license: "BSD-3-Clause", vulnerabilities: 1, type: "library" },
+        { name: "Jinja2", version: "3.1.2", license: "BSD-3-Clause", vulnerabilities: 0, type: "template-engine" },
+        { name: "click", version: "8.1.7", license: "BSD-3-Clause", vulnerabilities: 0, type: "cli-tool" },
+      ];
+    }
+    
     // Default mock data for other repositories
     return [
       { name: "react", version: "18.3.1", license: "MIT", vulnerabilities: 0, type: "library" },
-      { name: "express", version: "4.18.2", license: "MIT", vulnerabilities: 1, type: "framework" },
-      { name: "lodash", version: "4.17.20", license: "MIT", vulnerabilities: 2, type: "utility" },
-      { name: "@types/node", version: "20.5.0", license: "MIT", vulnerabilities: 0, type: "dev-dependency" },
-      { name: "axios", version: "1.4.0", license: "MIT", vulnerabilities: 0, type: "library" },
+      { name: "typescript", version: "5.2.2", license: "Apache-2.0", vulnerabilities: 0, type: "compiler" },
+      { name: "vite", version: "4.4.5", license: "MIT", vulnerabilities: 0, type: "build-tool" },
+      { name: "tailwindcss", version: "3.3.3", license: "MIT", vulnerabilities: 1, type: "css-framework" }
     ];
   };
 
