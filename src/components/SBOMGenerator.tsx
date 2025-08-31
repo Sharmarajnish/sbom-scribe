@@ -33,13 +33,33 @@ export const SBOMGenerator = () => {
   const [repoUrl, setRepoUrl] = useState("");
   const [results, setResults] = useState<SBOMComponent[] | null>(null);
 
-  const mockComponents: SBOMComponent[] = [
-    { name: "react", version: "18.3.1", license: "MIT", vulnerabilities: 0, type: "library" },
-    { name: "express", version: "4.18.2", license: "MIT", vulnerabilities: 1, type: "framework" },
-    { name: "lodash", version: "4.17.20", license: "MIT", vulnerabilities: 2, type: "utility" },
-    { name: "@types/node", version: "20.5.0", license: "MIT", vulnerabilities: 0, type: "dev-dependency" },
-    { name: "axios", version: "1.4.0", license: "MIT", vulnerabilities: 0, type: "library" },
-  ];
+  const getRepoMockData = (url: string): SBOMComponent[] => {
+    if (url.includes('numpy/numpy')) {
+      return [
+        { name: "setuptools", version: "70.0.0", license: "MIT", vulnerabilities: 0, type: "build-tool" },
+        { name: "wheel", version: "0.43.0", license: "MIT", vulnerabilities: 0, type: "build-tool" },
+        { name: "Cython", version: "3.0.10", license: "Apache-2.0", vulnerabilities: 0, type: "compiler" },
+        { name: "pytest", version: "8.2.2", license: "MIT", vulnerabilities: 1, type: "test-framework" },
+        { name: "hypothesis", version: "6.103.1", license: "MPL-2.0", vulnerabilities: 0, type: "test-library" },
+        { name: "sphinx", version: "7.3.7", license: "BSD-2-Clause", vulnerabilities: 0, type: "documentation" },
+        { name: "pyproject-metadata", version: "0.8.0", license: "MIT", vulnerabilities: 0, type: "build-tool" },
+        { name: "ninja", version: "1.11.1", license: "Apache-2.0", vulnerabilities: 0, type: "build-system" },
+        { name: "meson", version: "1.4.1", license: "Apache-2.0", vulnerabilities: 2, type: "build-system" },
+        { name: "openblas", version: "0.3.27", license: "BSD-3-Clause", vulnerabilities: 0, type: "library" },
+        { name: "lapack", version: "3.12.0", license: "BSD-3-Clause", vulnerabilities: 0, type: "library" },
+        { name: "gfortran", version: "13.2.0", license: "GPL-3.0", vulnerabilities: 1, type: "compiler" },
+      ];
+    }
+    
+    // Default mock data for other repositories
+    return [
+      { name: "react", version: "18.3.1", license: "MIT", vulnerabilities: 0, type: "library" },
+      { name: "express", version: "4.18.2", license: "MIT", vulnerabilities: 1, type: "framework" },
+      { name: "lodash", version: "4.17.20", license: "MIT", vulnerabilities: 2, type: "utility" },
+      { name: "@types/node", version: "20.5.0", license: "MIT", vulnerabilities: 0, type: "dev-dependency" },
+      { name: "axios", version: "1.4.0", license: "MIT", vulnerabilities: 0, type: "library" },
+    ];
+  };
 
   const handleGenerate = async () => {
     if (!repoUrl.trim()) {
@@ -74,12 +94,13 @@ export const SBOMGenerator = () => {
       });
     }
 
-    setResults(mockComponents);
+    const repoResults = getRepoMockData(repoUrl);
+    setResults(repoResults);
     setIsGenerating(false);
     
     toast({
       title: "SBOM Generated Successfully",
-      description: `Found ${mockComponents.length} components with ${mockComponents.reduce((sum, c) => sum + c.vulnerabilities, 0)} vulnerabilities`,
+      description: `Found ${repoResults.length} components with ${repoResults.reduce((sum, c) => sum + c.vulnerabilities, 0)} vulnerabilities`,
     });
   };
 
